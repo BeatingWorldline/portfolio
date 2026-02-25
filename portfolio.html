@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端开发作品集</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6; /* 更明亮的蓝色 */
+            --primary-dark: #2563eb;
+            --text-color: #111827;
+            --text-light: #6b7280;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px;
+            /* 背景纹理 */
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            padding: 5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), #8b5cf6);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #111827;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(90deg, #111827, #4b5563);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-size: 1.25rem;
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.75;
+        }
+
+        /* 容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* 分组样式 */
+        .group-section {
+            margin-bottom: 2.5rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        
+        .group-section:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .group-header {
+            padding: 1.5rem 2rem;
+            background: #ffffff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            position: relative;
+        }
+
+        /* 标题左侧装饰条 */
+        .group-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 4px;
+            background-color: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .group-header:hover::before {
+            opacity: 1;
+        }
+
+        .group-info {
+            flex: 1;
+        }
+
+        .group-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .group-desc {
+            color: var(--text-light);
+            margin-top: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .toggle-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            color: #9ca3af;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            padding: 4px;
+        }
+        
+        .group-header:hover .toggle-icon {
+            color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .group-header.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* 内容区域 - 动画核心逻辑 */
+        .group-content-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .group-content-wrapper.expanded {
+            grid-template-rows: 1fr;
+        }
+
+        .group-content-inner {
+            overflow: hidden;
+        }
+
+        .group-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            /* 解决 overflow hidden 导致的 margin collapse 问题 */
+            padding-top: 1rem; 
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            height: 100%;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: #bfdbfe;
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image-wrapper[style*="aspect-ratio"] {
+            height: auto !important;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            background-color: #e5e7eb;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image {
+            transform: scale(1.05);
+        }
+        
+        /* 图片上的遮罩层，提升质感 */
+        .card-image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .card:hover .card-image-wrapper::after {
+            opacity: 1;
+        }
+
+        .card-content {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: #111827;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.5;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 10px;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .card:hover .tag {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            header {
+                padding: 3rem 1.5rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .group-header {
+                padding: 1.25rem;
+            }
+
+            .group-content {
+                padding: 0 1.25rem 1.5rem 1.25rem;
+                gap: 16px;
+                padding-top: 0.5rem;
+            }
+
+            .group-content-wrapper.expanded .group-content {
+                /* H5 下强制单列竖向排列 */
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                /* 移动端卡片样式微调 */
+                flex-direction: row;
+                height: auto;
+                min-height: 110px;
+                align-items: stretch;
+            }
+
+            .card-image-wrapper {
+                width: 120px;
+                height: auto;
+                flex-shrink: 0;
+                padding-left: 6px;
+            }
+
+            .card-image-wrapper[style*="aspect-ratio"] {
+                width: 120px !important;
+                height: auto !important;
+            }
+            
+            .card:hover .card-image {
+                transform: none; /* 移动端移除缩放 */
+            }
+
+            .card-image {
+                /* 移动端保证图片完整展示 */
+                object-fit: contain;
+                background-color: transparent; /* 避免留白处显示默认底色 */
+            }
+
+            .card-content {
+                padding: 0.5rem 0.75rem;
+                justify-content: center;
+                min-width: 0; /* 防止内容溢出 */
+            }
+            
+            .card-title {
+                font-size: 1rem;
+                margin-bottom: 0.25rem;
+            }
+            
+            .card-tags {
+                padding-top: 0.25rem;
+            }
+            
+            .tag {
+                padding: 2px 6px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>前端开发作品集</h1>
+        <p>热爱技术，追求极致用户体验。这里展示了我参与开发的一些精选项目。</p>
+    </header>
+
+    <div class="container" id="portfolio-container">
+        <!-- 内容将通过 JavaScript 动态生成 -->
+    </div>
+
+    <script src="portfolio-data.js"></script>
+    <script>
+        // 渲染作品集
+        function renderPortfolio() {
+            const container = document.getElementById('portfolio-container');
+            if (!container || !portfolioData) return;
+
+            let html = '';
+
+            portfolioData.forEach((group, index) => {
+                const isExpanded = true; // 默认展开
+                
+                const cardsHtml = group.cards.map(card => {
+                    const ratioStyle = card.aspectRatio ? `aspect-ratio: ${card.aspectRatio};` : '';
+                    return `
+                    <a href="${card.link}" ${card.link.startsWith('http') ? 'target="_blank"' : ''} class="card">
+                        <div class="card-image-wrapper" style="${ratioStyle}">
+                            <img src="${card.image}" alt="${card.title}" class="card-image" loading="lazy">
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">${card.title}</div>
+                            <div class="card-desc">${card.desc}</div>
+                            <div class="card-tags">
+                                ${card.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </a>
+                `}).join('');
+
+                html += `
+                    <section class="group-section">
+                        <div class="group-header ${isExpanded ? 'expanded' : ''}" onclick="toggleGroup(this)">
+                            <div class="group-info">
+                                <div class="group-title">
+                                    ${group.groupTitle}
+                                </div>
+                                <div class="group-desc">${group.groupDesc}</div>
+                            </div>
+                            <svg class="toggle-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+
+                        <div class="group-content-wrapper ${isExpanded ? 'expanded' : ''}">
+                            <div class="group-content-inner">
+                                <div class="group-content">
+                                    ${cardsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleGroup(header) {
+            header.classList.toggle('expanded');
+            const contentWrapper = header.nextElementSibling;
+            contentWrapper.classList.toggle('expanded');
+        }
+
+        // 初始化渲染
+        document.addEventListener('DOMContentLoaded', renderPortfolio);
+    </script>
+</body>
+</html>
