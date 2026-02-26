@@ -78,7 +78,7 @@ const portfolioData = [
   },
   {
     groupTitle: "其他",
-    groupDesc: "CSDN在线博客，可扫码体验的微信小程序",
+    groupDesc: "",
     cards: [
       {
         title: "CSDN 技术博客",
@@ -95,6 +95,14 @@ const portfolioData = [
         tip: "请使用微信扫码，或在微信中打开本网站后长按跳转",
         image: "./img/wechat.png",
         tags: ["Uni-app", "微信小程序"],
+        aspectRatio: "1/1"
+      },
+      {
+        title: "3DM商城",
+        desc: "3DM 官方商城，支持PC和H5双端，能够联动3DM-APP、3DM主站、风灵月影",
+        link: "https://mall.3dmgame.hk/",
+        image: "./img/shop.png",
+        tags: ["Vue", "商城"],
         aspectRatio: "1/1"
       }
     ]
