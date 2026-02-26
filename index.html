@@ -388,6 +388,31 @@
                 font-size: 0.7rem;
             }
         }
+
+        /* Toast 提示样式 */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px 24px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -403,6 +428,26 @@
 
     <script src="portfolio-data.js"></script>
     <script>
+        // 显示 Toast 提示
+        function showTip(message) {
+            let toast = document.getElementById('toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast';
+                toast.className = 'toast';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.className = 'toast show';
+            
+            // 清除之前的定时器
+            if (toast.timeoutId) clearTimeout(toast.timeoutId);
+            
+            toast.timeoutId = setTimeout(function(){ 
+                toast.className = toast.className.replace("show", ""); 
+            }, 5000);
+        }
+
         // 渲染作品集
         function renderPortfolio() {
             const container = document.getElementById('portfolio-container');
@@ -415,8 +460,13 @@
                 
                 const cardsHtml = group.cards.map(card => {
                     const ratioStyle = card.aspectRatio ? `aspect-ratio: ${card.aspectRatio};` : '';
+                    const hasLink = card.link && card.link.trim() !== '';
+                    const clickHandler = hasLink ? '' : `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
+                    const href = hasLink ? card.link : 'javascript:void(0)';
+                    const target = hasLink && card.link.startsWith('http') ? 'target="_blank"' : '';
+
                     return `
-                    <a href="${card.link}" ${card.link.startsWith('http') ? 'target="_blank"' : ''} class="card">
+                    <a href="${href}" ${target} ${clickHandler} class="card">
                         <div class="card-image-wrapper" style="${ratioStyle}">
                             <img src="${card.image}" alt="${card.title}" class="card-image" loading="lazy">
                         </div>

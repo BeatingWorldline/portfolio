@@ -7,7 +7,7 @@ const portfolioData = [
       {
         title: "2026 马年庆典",
         desc: "3DM春节联动风灵月影送福利。打造沉浸式开奖动画，整合盲盒与直购玩法，累计签到破百万。",
-        link: "https://h5.3dmgame.com/activities/horseyear",
+        link: "https://beatingworldline.github.io/horseyear/",
         image: "./img/horseyear.webp",
         tags: ["gsap动画", "营销", "支付"],
         aspectRatio: "10/14"
@@ -92,6 +92,7 @@ const portfolioData = [
         title: "优惠券分发小程序",
         desc: "基于 Uni-app 开发的多端小程序（已发布微信端）。由 Vue 项目重构迁移，集成抽奖返现逻辑，主要用于顺风车业务的用户优惠分发。",
         link: "",
+        tip: "请使用微信扫码，或在微信中打开本网站后长按跳转",
         image: "./img/wechat.png",
         tags: ["Uni-app", "微信小程序"],
         aspectRatio: "1/1"
