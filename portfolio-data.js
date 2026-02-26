@@ -2,7 +2,7 @@
 const portfolioData = [
   {
     groupTitle: "移动端 H5 活动",
-    groupDesc: "针对移动端场景优化的营销活动H5，融合高频交互与流畅动画，兼容主流移动设备与Webview环境。<br/>点击卡片可跳转至线上活动页面。",
+    groupDesc: "针对移动端场景优化的营销活动H5，融合高频交互与流畅动画，兼容主流移动设备与Webview环境。",
     cards: [
       {
         title: "2026 马年庆典",

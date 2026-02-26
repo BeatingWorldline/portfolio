@@ -250,10 +250,55 @@
             background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.05) 100%);
             opacity: 0;
             transition: opacity 0.3s;
+            pointer-events: none;
         }
         
         .card:hover .card-image-wrapper::after {
             opacity: 1;
+        }
+
+        /* 覆盖层 */
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(2px);
+        }
+
+        .card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .overlay-btn {
+            background: white;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transform: translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card:hover .overlay-btn {
+            transform: translateY(0);
+        }
+
+        .overlay-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         .card-content {
@@ -262,13 +307,36 @@
             display: flex;
             flex-direction: column;
         }
+        
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.25rem;
+        }
 
         .card-title {
             font-weight: 700;
             font-size: 1rem;
-            margin-bottom: 0.25rem;
             color: #111827;
             line-height: 1.4;
+            flex: 1;
+            padding-right: 8px;
+        }
+        
+        .card-arrow {
+            color: var(--primary-color);
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .card-desc {
@@ -303,6 +371,29 @@
         .card:hover .tag {
             background-color: #eff6ff;
             color: var(--primary-color);
+        }
+
+        /* 移动端引导按钮 */
+        .mobile-action-btn {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mobile-action-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:active .mobile-action-btn svg {
+            transform: translateX(4px);
         }
 
         /* 响应式调整 */
@@ -340,21 +431,22 @@
 
             .card {
                 /* 移动端卡片样式微调 */
-                flex-direction: row;
+                flex-direction: column; /* 改回竖向排列，以便放置底部按钮 */
                 height: auto;
-                min-height: 110px;
+                min-height: auto;
                 align-items: stretch;
             }
 
             .card-image-wrapper {
-                width: 120px;
+                width: 100%;
                 height: auto;
                 flex-shrink: 0;
-                padding-left: 6px;
+                padding-left: 0;
+                aspect-ratio: 16/9; /* 统一移动端图片比例 */
             }
 
             .card-image-wrapper[style*="aspect-ratio"] {
-                width: 120px !important;
+                width: 100% !important;
                 height: auto !important;
             }
             
@@ -364,28 +456,40 @@
 
             .card-image {
                 /* 移动端保证图片完整展示 */
-                object-fit: contain;
-                background-color: transparent; /* 避免留白处显示默认底色 */
+                object-fit: cover; /* 移动端改回 cover 以保证美观 */
             }
 
             .card-content {
-                padding: 0.5rem 0.75rem;
-                justify-content: center;
-                min-width: 0; /* 防止内容溢出 */
+                padding: 1rem;
+                justify-content: flex-start;
+                min-width: 0; 
             }
             
             .card-title {
-                font-size: 1rem;
+                font-size: 1.1rem;
                 margin-bottom: 0.25rem;
             }
             
             .card-tags {
-                padding-top: 0.25rem;
+                padding-top: 0.5rem;
             }
             
             .tag {
-                padding: 2px 6px;
-                font-size: 0.7rem;
+                padding: 3px 8px;
+                font-size: 0.75rem;
+            }
+
+            /* 移动端引导优化 */
+            .card-overlay {
+                display: none;
+            }
+
+            .card-arrow {
+                display: none; /* 隐藏标题箭头 */
+            }
+
+            .mobile-action-btn {
+                display: flex; /* 显示底部文字按钮 */
             }
         }
 
@@ -419,7 +523,7 @@
 
     <header>
         <h1>前端开发作品集</h1>
-        <p>热爱技术，追求极致用户体验。这里展示了我参与开发的一些精选项目。</p>
+        <p>深耕前端技术领域，专注于构建高质量的 Web 应用。</p>
     </header>
 
     <div class="container" id="portfolio-container">
@@ -464,17 +568,36 @@
                     const clickHandler = hasLink ? '' : `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
                     const href = hasLink ? card.link : 'javascript:void(0)';
                     const target = hasLink && card.link.startsWith('http') ? 'target="_blank"' : '';
+                    const actionText = hasLink ? '访问网站' : '扫码体验';
+                    const actionIcon = hasLink ? 
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>' : 
+                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
 
                     return `
-                    <a href="${href}" ${target} ${clickHandler} class="card">
+                    <a href="${href}" ${target} ${clickHandler} class="card group">
                         <div class="card-image-wrapper" style="${ratioStyle}">
                             <img src="${card.image}" alt="${card.title}" class="card-image" loading="lazy">
+                            <div class="card-overlay">
+                                <span class="overlay-btn">
+                                    ${actionText}
+                                    ${actionIcon}
+                                </span>
+                            </div>
                         </div>
                         <div class="card-content">
-                            <div class="card-title">${card.title}</div>
+                            <div class="card-title-row">
+                                <div class="card-title">${card.title}</div>
+                                <div class="card-arrow">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </div>
+                            </div>
                             <div class="card-desc">${card.desc}</div>
                             <div class="card-tags">
                                 ${card.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                            <div class="mobile-action-btn">
+                                ${actionText}
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                             </div>
                         </div>
                     </a>
