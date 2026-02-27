@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>打开小程序</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <script>
+        window.onerror = e => {
+            console.error(e)
+            alert('发生错误' + e)
+        }
+    </script>
+    <!-- WeUI CSS -->
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.4.1/weui.min.css">
+    <!-- 微信 JS-SDK -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script>
+        function docReady(fn) {
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                fn()
+            } else {
+                document.addEventListener('DOMContentLoaded', fn);
+            }
+        }
+
+        docReady(async function () {
+            var ua = navigator.userAgent.toLowerCase()
+            var isWXWork = ua.match(/wxwork/i) == 'wxwork'
+            var isWeixin = !isWXWork && ua.match(/micromessenger/i) == 'micromessenger'
+            
+            if (isWeixin) {
+                // 微信环境内
+                var containerEl = document.getElementById('wechat-web-container')
+                containerEl.classList.remove('hidden')
+                containerEl.classList.add('full', 'wechat-web-container')
+
+                var launchBtn = document.getElementById('launch-btn')
+                launchBtn.addEventListener('ready', function (e) {
+                    console.log('开放标签 ready')
+                })
+                launchBtn.addEventListener('launch', function (e) {
+                    console.log('开放标签 success')
+                })
+                launchBtn.addEventListener('error', function (e) {
+                    console.log('开放标签 fail', e.detail)
+                })
+
+                wx.config({
+                    // debug: true, // 调试时可开启
+                    appId: 'wxac0b60031891ca0c', // 必填，公众号的唯一标识
+                    timestamp: 0, // 必填，填任意数字即可
+                    nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
+                    signature: 'signature', // 必填，填任意非空字符串即可
+                    jsApiList: ['chooseImage'], // 必填，随意一个接口即可
+                    openTagList: ['wx-open-launch-weapp'], // 填入打开小程序的开放标签名
+                })
+            } else {
+                // 非微信环境（PC浏览器、外部浏览器、其他App）统一显示提示
+                var containerEl = document.getElementById('public-web-container')
+                containerEl.classList.remove('hidden')
+                containerEl.classList.add('full', 'public-web-container')
+            }
+        })
+    </script>
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .full {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .public-web-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .public-web-container p {
+            position: absolute;
+            top: 40%;
+            text-align: center;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .wechat-web-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wechat-web-container p {
+            position: absolute;
+            top: 40%;
+        }
+
+        .wechat-web-container wx-open-launch-weapp {
+            position: absolute;
+            bottom: 40%;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page full">
+        <!-- 非微信环境提示容器 -->
+        <div id="public-web-container" class="hidden">
+            <p class="">请在微信客户端打开链接</p>
+        </div>
+
+        <!-- 微信内部跳转容器 -->
+        <div id="wechat-web-container" class="hidden">
+            <p class="">点击以下按钮打开“小美满小加餐”</p>
+            <!-- username: 填入小程序原始账号ID（gh_开头） -->
+            <!-- path: 填入要跳转到的页面路径 -->
+            <wx-open-launch-weapp id="launch-btn" username="gh_c2a7424f942e" path="pages/index/index">
+                <template>
+                    <style>
+                        .btn {
+                            padding: 12px 24px;
+                            width: 200px; 
+                            height: 45px;
+                            line-height: 45px;
+                            text-align: center;
+                            font-size: 17px; 
+                            display: block; 
+                            margin: 0 auto; 
+                            border: none; 
+                            border-radius: 4px;
+                            background-color: #07c160;
+                            color: #fff;
+                        }
+                    </style>
+                    <button class="btn">打开小程序</button>
+                </template>
+            </wx-open-launch-weapp>
+        </div>
+    </div>
+</body>
+</html>

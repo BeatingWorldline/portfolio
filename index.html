@@ -517,6 +517,76 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-desc {
+            margin-top: 15px;
+            color: #4b5563;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #9ca3af;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #111827;
+        }
     </style>
 </head>
 <body>
@@ -528,6 +598,15 @@
 
     <div class="container" id="portfolio-container">
         <!-- 内容将通过 JavaScript 动态生成 -->
+    </div>
+
+    <!-- 图片/二维码模态框 -->
+    <div id="image-modal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <img id="modal-image" src="" alt="Preview">
+            <p id="modal-desc" class="modal-desc"></p>
+        </div>
     </div>
 
     <script src="portfolio-data.js"></script>
@@ -552,6 +631,29 @@
             }, 5000);
         }
 
+        // 显示图片/二维码模态框
+        function showModal(imageSrc, desc) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-image');
+            const modalDesc = document.getElementById('modal-desc');
+            
+            modalImg.src = imageSrc;
+            modalDesc.textContent = desc || '';
+            
+            modal.style.display = 'flex';
+            // 强制重绘以触发 transition
+            modal.offsetHeight; 
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
         // 渲染作品集
         function renderPortfolio() {
             const container = document.getElementById('portfolio-container');
@@ -565,13 +667,50 @@
                 const cardsHtml = group.cards.map(card => {
                     const ratioStyle = card.aspectRatio ? `aspect-ratio: ${card.aspectRatio};` : '';
                     const hasLink = card.link && card.link.trim() !== '';
-                    const clickHandler = hasLink ? '' : `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
-                    const href = hasLink ? card.link : 'javascript:void(0)';
-                    const target = hasLink && card.link.startsWith('http') ? 'target="_blank"' : '';
-                    const actionText = hasLink ? '访问网站' : '扫码体验';
-                    const actionIcon = hasLink ? 
-                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>' : 
-                        '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
+                    const isMiniProgram = card.tags && card.tags.includes('微信小程序');
+                    
+                    let clickHandler = '';
+                    let href = 'javascript:void(0)';
+                    let target = '';
+                    let actionText = '';
+                    let actionIcon = '';
+
+                    if (hasLink) {
+                        href = card.link;
+                        target = card.link.startsWith('http') ? 'target="_blank"' : '';
+                        actionText = isMiniProgram ? '打开小程序' : '访问网站';
+                        
+                        // 外部链接通用图标
+                        actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
+
+                        // 如果是 PC 端且是小程序，强制改为弹窗展示二维码
+                        // 简单判断 PC 端：屏幕宽度 > 768px (也可以结合 userAgent，但这里用 CSS 媒体查询阈值较一致)
+                        if (isMiniProgram) {
+                            clickHandler = `onclick="
+                                var ua = navigator.userAgent.toLowerCase();
+                                var isWeixin = ua.indexOf('micromessenger') !== -1;
+                                if(window.innerWidth > 768 || !isWeixin) { 
+                                    showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); 
+                                    return false; 
+                                } else { 
+                                    return true; 
+                                }"`;
+                        }
+
+                    } else {
+                        // 无链接时的处理
+                        if (isMiniProgram) {
+                            // 小程序且无链接，显示模态框展示二维码
+                            clickHandler = `onclick="showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); return false;"`;
+                            actionText = '扫码体验';
+                            actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
+                        } else {
+                            // 普通项目且无链接，显示 Toast
+                            clickHandler = `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
+                            actionText = '扫码体验'; // 默认文案
+                            actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
+                        }
+                    }
 
                     return `
                     <a href="${href}" ${target} ${clickHandler} class="card group">
