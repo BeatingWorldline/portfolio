@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.4.1/weui.min.css">
     <!-- 微信 JS-SDK -->
     <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <!-- 云开发 Web SDK (必须引入才能实现免鉴权) -->
+    <script src="https://res.wx.qq.com/open/js/cloudbase/1.1.0/cloud.js"></script>
     <script>
         function docReady(fn) {
             if (document.readyState === 'complete' || document.readyState === 'interactive') {
@@ -45,14 +47,31 @@
                     console.log('开放标签 fail', e.detail)
                 })
 
+                // 初始化云开发环境 (这是免鉴权的关键步骤)
+                // 1. 必须引入 cloud.js (已在 head 中引入)
+                // 2. 必须在云开发控制台 -> 静态网站托管 -> 部署此页面
+                // 3. 必须使用云开发分配的域名访问 (或绑定的自定义域名)
+                var c = new cloud.Cloud({
+                    identityless: true,
+                    resourceAppid: 'wxac0b60031891ca0c', // 资源方 AppID
+                    resourceEnv: 'zhangzhicong-0ginpr154d8021ee', // ⚠️替换为真实的腾讯云环境ID
+                })
+                await c.init()
+
+                // 云开发免鉴权不需要 wx.config，直接使用开放标签即可
+                // 但为了保险起见，或者如果是非云开发域名，依然可能需要签名
+                // 在云开发静态网站托管下，只要引入了 cloud.js 并 init，开放标签通常会自动生效
+                // 如果依然报错 invalid signature，说明可能不在云托管域名下，或者必须走签名流程
+                
+                // 尝试配置 wx.config，但在云托管下参数可随意
                 wx.config({
-                    debug: true, // 调试时可开启
-                    appId: 'wxac0b60031891ca0c', // 必填，公众号的唯一标识
-                    timestamp: 0, // 必填，填任意数字即可
-                    nonceStr: 'nonceStr', // 必填，填任意非空字符串即可
-                    signature: 'signature', // 必填，填任意非空字符串即可
-                    jsApiList: ['chooseImage'], // 必填，随意一个接口即可
-                    openTagList: ['wx-open-launch-weapp'], // 填入打开小程序的开放标签名
+                    // debug: true, 
+                    appId: 'wxac0b60031891ca0c', 
+                    timestamp: 0, 
+                    nonceStr: 'nonceStr', 
+                    signature: 'signature', 
+                    jsApiList: ['chooseImage'], 
+                    openTagList: ['wx-open-launch-weapp'], 
                 })
 
                 wx.ready(function () {
