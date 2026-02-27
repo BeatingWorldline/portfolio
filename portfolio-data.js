@@ -91,7 +91,7 @@ const portfolioData = [
       {
         title: "优惠券分发小程序",
         desc: "基于 Uni-app 开发的多端小程序（已发布微信端）。由 Vue 项目重构迁移，集成抽奖返现逻辑，主要用于顺风车业务的用户优惠分发。",
-        link: "./jump-mp.html", // 跳转到中间页处理小程序唤起逻辑
+        link: "https://zhangzhicong-0ginpr154d8021ee-1309785551.tcloudbaseapp.com/jump-mp/", // 跳转到中间页处理小程序唤起逻辑
         tip: "长按识别小程序码，或保存图片后在微信扫一扫",
         image: "./img/wechat.png",
         tags: ["Uni-app", "微信小程序"],
