@@ -13,19 +13,19 @@ const portfolioData = [
         aspectRatio: "10/14"
       },
       {
+        title: "《黑神话：悟空》联名活动",
+        desc: "持续更新的联名营销活动，已联动如《潜行者2》、《排球少年》、《魔兽世界》、《纸嫁衣系列》等。",
+        link: "https://beatingworldline.github.io/wukong/",
+        image: "./img/wukong.jpg",
+        tags: ["联动推广", "任务分发抽奖"],
+        aspectRatio: "10/14"
+      },
+      {
         title: "盲盒活动",
         desc: "APP常驻商业模块，随《黑神话》同步上线后火爆并持续更新，累计营收破千万",
         link: "https://h5.3dmgame.com/activities/blindCfg?id=50",
         image: "./img/blind.webp",
         tags: ["lottie动画", "移动端"],
-        aspectRatio: "10/14"
-      },
-      {
-        title: "纸嫁衣游戏联名活动",
-        desc: "持续更新的联名营销活动，已联动如《潜行者2》、《排球少年》、《魔兽世界》、《黑神话：悟空》等。",
-        link: "https://h5.3dmgame.com/activities/wedding",
-        image: "./img/wedding.png",
-        tags: ["联动推广", "任务分发抽奖"],
         aspectRatio: "10/14"
       },
       {
