@@ -185,8 +185,8 @@
 
         .group-content {
             padding: 0 1.5rem 1.5rem 1.5rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             /* 解决 overflow hidden 导致的 margin collapse 问题 */
             padding-top: 1rem; 
@@ -194,6 +194,8 @@
 
         /* 卡片样式 */
         .card {
+            /* Flex 布局适配: 基础宽 240px，允许伸缩 */
+            flex: 1 1 240px;
             background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
@@ -345,6 +347,7 @@
             margin-bottom: 0.5rem;
             display: -webkit-box;
             -webkit-box-orient: vertical;
+            /* -webkit-line-clamp: 3; // 限制显示3行 */
             overflow: hidden;
             text-overflow: ellipsis;
             line-height: 1.5;
@@ -426,12 +429,14 @@
 
             .group-content-wrapper.expanded .group-content {
                 /* H5 下强制单列竖向排列 */
-                grid-template-columns: 1fr;
+                flex-direction: column;
             }
 
             .card {
                 /* 移动端卡片样式微调 */
                 flex-direction: column; /* 改回竖向排列，以便放置底部按钮 */
+                flex: 0 0 auto; /* 重置 flex 属性，让高度自适应内容 */
+                width: 100%;
                 height: auto;
                 min-height: auto;
                 align-items: stretch;
