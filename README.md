@@ -31,7 +31,7 @@
   
   // 核心配置 1: 跳转链接
   // 指向中间页 jump-mp.html，用于处理微信环境内的开放标签逻辑  🔺需要及时更新 否则跳转失效
-  link: "https://zhangzhicong-0ginpr154d8021ee-1309785551.tcloudbaseapp.com/jump-mp/", 
+  link: "https://zhangzhicong.site//jump-mp/", 
   
   // 核心配置 2: 引导提示
   // 当在 PC 端或非微信环境下点击时，弹窗显示的提示语
