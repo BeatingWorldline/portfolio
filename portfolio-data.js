@@ -7,7 +7,7 @@ const portfolioData = [
       {
         title: "2026 马年庆典",
         desc: "3DM春节联动风灵月影送福利。打造沉浸式开奖动画，整合盲盒与直购玩法，累计签到破百万。",
-        link: "https://beatingworldline.github.io/horseyear/",
+        link: "https://zhangzhicong.site/horseyear",
         image: "./img/horseyear.webp",
         tags: ["gsap动画", "营销", "支付"],
         aspectRatio: "10/14"
@@ -15,7 +15,7 @@ const portfolioData = [
       {
         title: "《黑神话：悟空》联名活动",
         desc: "持续更新的联名营销活动，已联动如《潜行者2》、《排球少年》、《魔兽世界》、《纸嫁衣系列》等。",
-        link: "https://beatingworldline.github.io/wukong/",
+        link: "https://zhangzhicong.site/wukong/",
         image: "./img/wukong.jpg",
         tags: ["联动推广", "任务分发抽奖"],
         aspectRatio: "10/14"
@@ -45,7 +45,7 @@ const portfolioData = [
       {
         title: "AI 对话助手",
         desc: "基于阿里千问大模型（Qwen）构建的 AI 对话助手。复刻 DeepSeek 网页端交互体验，实现流式对话与上下文记忆功能。",
-        link: "https://beatingworldline.github.io/AI-Chat/",
+        link: "https://zhangzhicong.site/AI-Chat/",
         image: "./img/AI.png",
         tags: ["Vue3", "阿里百炼 API"],
         aspectRatio: "50/62"
@@ -53,7 +53,7 @@ const portfolioData = [
       {
         title: "《黑神话：悟空》地图工具",
         desc: "基于 Leaflet 实现的 Web GIS 游戏地图工具。支持标记筛选、点位追踪与缩放交互，还原游民星空地图核心功能。",
-        link: "https://beatingworldline.github.io/wukong-map/",
+        link: "https://zhangzhicong.site/wukong-map/",
         image: "./img/map.png",
         tags: ["Leaflet", "Web GIS"],
         aspectRatio: "10/7.3"
@@ -61,7 +61,7 @@ const portfolioData = [
       {
         title: "3D VR 看房体验",
         desc: "基于 Three.js 构建的 3D 全景看房 Demo。支持鼠标拖拽视察与空间漫游交互。",
-        link: "https://beatingworldline.github.io/3d_vr/",
+        link: "https://zhangzhicong.site/3d_vr/",
         image: "./img/three.webp",
         tags: ["Three.js", "Vue", "3D可视化"],
         aspectRatio: "1/1"
@@ -91,7 +91,7 @@ const portfolioData = [
       {
         title: "优惠券分发小程序",
         desc: "基于 Uni-app 开发的多端小程序（已发布微信端）。由 Vue 项目重构迁移，集成抽奖返现逻辑，主要用于顺风车业务的用户优惠分发。",
-        link: "https://zhangzhicong-0ginpr154d8021ee-1309785551.tcloudbaseapp.com/jump-mp/", // 跳转到中间页处理小程序唤起逻辑
+        link: "https://zhangzhicong.site/jump-mp", // 跳转到中间页处理小程序唤起逻辑
         tip: "长按识别小程序码，或保存图片后在微信扫一扫",
         image: "./img/wechat.png",
         tags: ["Uni-app", "微信小程序"],
