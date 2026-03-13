@@ -718,12 +718,12 @@
                             clickHandler = `onclick="
                                 var ua = navigator.userAgent.toLowerCase();
                                 var isWeixin = ua.indexOf('micromessenger') !== -1;
-                                if(window.innerWidth > 768 || !isWeixin) { 
+                                // if(window.innerWidth > 768 || !isWeixin) { 
                                     showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); 
                                     return false; 
-                                } else { 
-                                    return true; 
-                                }"`;
+                                // } else { 
+                                //     return true; 
+                                // }"`;
                         }
 
                     } else {
