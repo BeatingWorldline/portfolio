@@ -704,41 +704,20 @@
                     let actionText = '';
                     let actionIcon = '';
 
-                    if (hasLink) {
+                    if (isMiniProgram) {
+                        clickHandler = `onclick="showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); return false;"`;
+                        actionText = '扫码体验';
+                        actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
+                    } else if (hasLink) {
                         href = card.link;
                         target = card.link.startsWith('http') ? 'target="_blank"' : '';
-                        actionText = isMiniProgram ? '打开小程序' : '访问网站';
+                        actionText = '访问网站';
                         
-                        // 外部链接通用图标
                         actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>';
-
-                        // 如果是 PC 端且是小程序，强制改为弹窗展示二维码
-                        // 简单判断 PC 端：屏幕宽度 > 768px (也可以结合 userAgent，但这里用 CSS 媒体查询阈值较一致)
-                        if (isMiniProgram) {
-                            clickHandler = `onclick="
-                                var ua = navigator.userAgent.toLowerCase();
-                                var isWeixin = ua.indexOf('micromessenger') !== -1;
-                                // if(window.innerWidth > 768 || !isWeixin) { 
-                                    showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); 
-                                    return false; 
-                                // } else { 
-                                //     return true; 
-                                // }"`;
-                        }
-
                     } else {
-                        // 无链接时的处理
-                        if (isMiniProgram) {
-                            // 小程序且无链接，显示模态框展示二维码
-                            clickHandler = `onclick="showModal('${card.image}', '${card.tip || '请使用微信扫码体验'}'); return false;"`;
-                            actionText = '扫码体验';
-                            actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
-                        } else {
-                            // 普通项目且无链接，显示 Toast
-                            clickHandler = `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
-                            actionText = '扫码体验'; // 默认文案
-                            actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
-                        }
+                        clickHandler = `onclick="showTip('${card.tip || '暂无链接'}'); return false;"`;
+                        actionText = '扫码体验';
+                        actionIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>';
                     }
 
                     return `
