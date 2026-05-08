@@ -31,7 +31,7 @@ const portfolioData = [
       {
         title: "TGA 年度评选投票",
         desc: "2025年度 TGA 游戏大奖中国区投票页。支持多奖项实时投票与动态榜单展示。",
-        link: "https://h5.3dmgame.com/activities/tga",
+        link: "https://zhangzhicong.site/TGA/",
         image: "./img/tga.webp",
         tags: ["TGA游戏大奖", "投票"],
         aspectRatio: "10/14"
