@@ -23,7 +23,7 @@ const portfolioData = [
       {
         title: "盲盒活动",
         desc: "APP常驻商业模块，随《黑神话》同步上线后火爆并持续更新，累计营收破千万",
-        link: "https://h5.3dmgame.com/activities/blindCfg?id=50",
+        link: "https://zhangzhicong.site/blindcfg/",
         image: "./img/blind.webp",
         tags: ["lottie动画", "移动端"],
         aspectRatio: "10/14"
