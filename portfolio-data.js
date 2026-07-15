@@ -14,7 +14,7 @@ const portfolioData = [
       },
       {
         title: "《黑神话：悟空》联名活动",
-        desc: "持续更新的联名营销活动，已联动如《潜行者2》、《排球少年》、《魔兽世界》、《纸嫁衣系列》等。",
+        desc: "持续更新的联名营销活动，已联动如《排球少年》、《魔兽世界》、《纸嫁衣系列》等。",
         link: "https://zhangzhicong.site/wukong/",
         image: "./img/wukong.jpg",
         tags: ["联动推广", "任务分发抽奖"],
