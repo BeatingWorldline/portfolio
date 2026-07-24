@@ -31,7 +31,7 @@
         <main>
             <section class="hero-section" id="home">
                 <div class="hero-shell">
-                    <video class="hero-bg" autoplay muted loop playsinline preload="auto">
+                    <video class="hero-bg" autoplay muted loop playsinline preload="metadata">
                         <source src="video/background.mp4" type="video/mp4">
                     </video>
                     <div class="hero-overlay"></div>
@@ -70,7 +70,11 @@
                     </div>
                     <div class="experience-grid">
                         <div class="experience-portrait">
-                            <div class="portrait-core"></div>
+                            <figure class="tilted-portrait" id="experience-tilt-card" tabindex="0" aria-label="张志聪形象卡片">
+                                <div class="tilted-portrait-inner">
+                                    <div class="portrait-core"></div>
+                                </div>
+                            </figure>
                         </div>
                         <div class="experience-summary">
                             <span class="summary-kicker">About Me</span>

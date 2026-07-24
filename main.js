@@ -279,7 +279,6 @@ function initCarousel() {
     const items = Array.from(track.querySelectorAll('.showcase-item'));
     if (!items.length) return;
 
-    // Clone all items for seamless loop
     track.innerHTML = track.innerHTML + track.innerHTML;
 
     let isDragging = false, startX = 0, scrollLeft = 0, hasMoved = false;
@@ -297,7 +296,6 @@ function initCarousel() {
         track.scrollLeft = ((track.scrollLeft % w) + w) % w;
     }
 
-    // Auto-scroll
     function startAutoScroll() {
         if (autoScrollId) return;
         autoScrollId = requestAnimationFrame(function tick() {
@@ -312,7 +310,6 @@ function initCarousel() {
     }
     startAutoScroll();
 
-    // Mouse drag
     track.addEventListener('mousedown', e => {
         if (e.button !== 0) return;
         isDragging = true; hasMoved = false;
@@ -337,12 +334,10 @@ function initCarousel() {
         startX = 0;
     });
 
-    // Click (only if no drag happened)
     track.addEventListener('click', e => {
         if (hasMoved) { e.stopPropagation(); e.preventDefault(); }
     }, true);
 
-    // Touch
     let touchStartX = 0, touchScrollLeft = 0, touchMoved = false;
     track.addEventListener('touchstart', e => {
         touchStartX = e.touches[0].pageX;
@@ -365,12 +360,30 @@ function initCarousel() {
 /* ---- hero video observer ---- */
 function initHeroVideoObserver() {
     const hero = document.querySelector('.hero-section');
+    const heroVideo = document.querySelector('.hero-bg');
     if (!hero) return;
+    const syncVideoState = visible => {
+        if (!heroVideo) return;
+        if (visible && document.visibilityState === 'visible') {
+            const playPromise = heroVideo.play();
+            if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(() => {});
+        } else {
+            heroVideo.pause();
+        }
+    };
+
     new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            document.body.classList.toggle('hero-scrolled', !entry.isIntersecting);
+            const isVisible = entry.isIntersecting;
+            document.body.classList.toggle('hero-scrolled', !isVisible);
+            syncVideoState(isVisible);
         });
     }, { threshold: 0.1 }).observe(hero);
+
+    document.addEventListener('visibilitychange', () => {
+        const inHero = !document.body.classList.contains('hero-scrolled');
+        syncVideoState(inHero);
+    });
 }
 
 // Touch devices: toggle strength cards on tap
@@ -388,6 +401,82 @@ function initStrengthCardTap() {
         document.querySelectorAll('.strength-card.is-touched').forEach(c => c.classList.remove('is-touched'));
         // Toggle this one
         if (!wasTouched) card.classList.add('is-touched');
+    });
+}
+
+function initTiltedPortrait() {
+    const card = document.getElementById('experience-tilt-card');
+    if (!card) return;
+
+    const maxRotate = 7;
+    const activeScale = 1.02;
+    let frameId = 0;
+    let isActive = false;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+
+    function setVars(rx, ry, scale) {
+        card.style.setProperty('--tilt-rotate-x', `${rx.toFixed(2)}deg`);
+        card.style.setProperty('--tilt-rotate-y', `${ry.toFixed(2)}deg`);
+        card.style.setProperty('--tilt-scale', String(scale));
+    }
+
+    function render() {
+        currentX += (targetX - currentX) * 0.14;
+        currentY += (targetY - currentY) * 0.14;
+
+        if (!isActive && Math.abs(currentX) < 0.02 && Math.abs(currentY) < 0.02) {
+            currentX = 0;
+            currentY = 0;
+            setVars(0, 0, 1);
+            frameId = 0;
+            return;
+        }
+
+        setVars(currentY, currentX, isActive ? activeScale : 1);
+        frameId = window.requestAnimationFrame(render);
+    }
+
+    function startRenderLoop() {
+        if (!frameId) frameId = window.requestAnimationFrame(render);
+    }
+
+    function resetCard() {
+        isActive = false;
+        card.classList.remove('is-active');
+        targetX = 0;
+        targetY = 0;
+        startRenderLoop();
+    }
+
+    if (window.matchMedia('(pointer: coarse)').matches) {
+        resetCard();
+        return;
+    }
+
+    card.addEventListener('pointerenter', () => {
+        isActive = true;
+        card.classList.add('is-active');
+        startRenderLoop();
+    });
+
+    card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left - rect.width / 2;
+        const offsetY = event.clientY - rect.top - rect.height / 2;
+        targetY = (offsetY / (rect.height / 2)) * -maxRotate;
+        targetX = (offsetX / (rect.width / 2)) * maxRotate;
+        startRenderLoop();
+    });
+
+    card.addEventListener('pointerleave', resetCard);
+    card.addEventListener('blur', resetCard);
+    card.addEventListener('focus', () => {
+        isActive = true;
+        card.classList.add('is-active');
+        startRenderLoop();
     });
 }
 
@@ -434,6 +523,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderStrengths();
     renderContact();
     bindEvents();
+    initTiltedPortrait();
 
     // Wait for loading screen to finish
     await runLoadingScreen();
